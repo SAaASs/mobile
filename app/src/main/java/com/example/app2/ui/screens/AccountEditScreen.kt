@@ -1,4 +1,5 @@
 package com.example.app2.ui.screens
+import androidx.compose.ui.platform.testTag
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -72,11 +73,13 @@ fun AccountEditScreen(
             // Тип счёта
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 FilterChip(
+                    modifier = Modifier.testTag("chipCurrent"),
                     selected = type == AccountType.CURRENT,
                     onClick = { typeName = AccountType.CURRENT.name },
                     label = { Text("Текущий") }
                 )
                 FilterChip(
+                    modifier = Modifier.testTag("chipSavings"),
                     selected = type == AccountType.SAVINGS,
                     onClick = { typeName = AccountType.SAVINGS.name },
                     label = { Text("Сберегательный") }
@@ -86,10 +89,11 @@ fun AccountEditScreen(
             Spacer(Modifier.height(12.dp))
 
             OutlinedTextField(
+
                 value = number,
                 onValueChange = { number = it },
                 label = { Text("Номер") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().testTag("numberField"),
             )
 
             Spacer(Modifier.height(12.dp))
@@ -101,7 +105,7 @@ fun AccountEditScreen(
                         onValueChange = { serviceFee = it },
                         label = { Text("Плата за обслуживание (руб/мес)") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth().testTag("serviceFeeField"),
                     )
                 }
 
@@ -111,13 +115,14 @@ fun AccountEditScreen(
                         onValueChange = { interestRate = it },
                         label = { Text("Процентная ставка (%)") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth().testTag("interestRateField"),
                     )
 
                     Spacer(Modifier.height(8.dp))
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Switch(
+                            modifier = Modifier.testTag("capSwitch"),
                             checked = capitalization,
                             onCheckedChange = { capitalization = it }
                         )
@@ -165,7 +170,7 @@ fun AccountEditScreen(
                     error = null
                     onSave(account)
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().testTag("saveButton"),
             ) {
                 Text("Сохранить")
             }

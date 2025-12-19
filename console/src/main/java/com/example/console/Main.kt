@@ -1,13 +1,16 @@
 package com.example.console
 
-
+import com.example.core.data.InMemoryAccountsRepository
+import com.example.core.domain.usecase.AccountUseCases
 import com.example.core.factory.*
 import com.example.core.format.DefaultAccountFormatter
 import com.example.core.input.*
-import com.example.core.storage.InMemoryAccountRepository
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
-fun main() {
-    val repo = InMemoryAccountRepository()
+fun main() = runBlocking {
+    val repo = InMemoryAccountsRepository()
+    val useCases = AccountUseCases.from(repo)
 
     val selector = AccountFactorySelector(
         mapOf("T" to CurrentAccountFactory(), "S" to SavingsAccountFactory())
@@ -18,14 +21,18 @@ fun main() {
         parser = SpaceSeparatedParser(),
         validator = NonEmptyValidator(),
         factorySelector = selector,
-        repo = repo
+        useCases = useCases
     )
 
     val formatter = DefaultAccountFormatter()
     val printer = ConsolePrinter()
 
+    // ✅ Сначала вводим данные
     inputProcessor.processInput()
 
+    // ✅ Потом получаем "текущий" список (StateFlow отдаст актуальное)
+    val accounts = useCases.observe().first()
+
     printer.print("\nВсе счета:")
-    repo.getAll().forEach { printer.print(formatter.format(it)) }
+    accounts.forEach { printer.print(formatter.format(it)) }
 }

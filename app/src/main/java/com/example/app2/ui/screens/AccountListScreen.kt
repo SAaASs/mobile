@@ -1,5 +1,6 @@
 package com.example.app2.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
@@ -11,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.app2.ui.viewmodel.AccountsViewModel
 import com.example.core.format.DefaultAccountFormatter
+import androidx.compose.ui.platform.testTag
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,7 +37,7 @@ fun AccountListScreen(
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = onCreate) { Text("+") }
+            FloatingActionButton(modifier = Modifier.testTag("createFab"),onClick = onCreate) { Text("+") }
         }
     ) { padd ->
         Column(
@@ -58,7 +60,7 @@ fun AccountListScreen(
                         TextButton(onClick = { filterText = "" }) { Text("Очистить") }
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().testTag("filterField"),
             )
 
             state.error?.let {
@@ -76,6 +78,7 @@ fun AccountListScreen(
                         Modifier
                             .fillMaxWidth()
                             .padding(vertical = 6.dp)
+                            .testTag("accountCard_${acc.number}").clickable { onOpen(acc.number) }
                     ) {
                         Column(Modifier.padding(12.dp)) {
                             Text(formatter.format(acc))

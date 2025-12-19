@@ -6,7 +6,8 @@ import com.example.app2.data.RoomAccountDataSource
 import com.example.app2.data.RoomAccountRepository
 import com.example.app2.data.local.room.AccountDao
 import com.example.app2.data.local.room.AppDatabase
-import com.example.core.storage.AccountRepository
+import com.example.core.domain.repository.AccountsRepository
+import com.example.core.domain.usecase.AccountUseCases
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,6 +19,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+    // --- ROOM ---
     @Provides
     @Singleton
     fun provideDb(@ApplicationContext ctx: Context): AppDatabase =
@@ -31,8 +33,15 @@ object AppModule {
     fun provideDataSource(dao: AccountDao): RoomAccountDataSource =
         RoomAccountDataSource(dao)
 
+    // --- Domain Repository (ЕДИНЫЙ) ---
     @Provides
     @Singleton
-    fun provideAccountRepository(ds: RoomAccountDataSource): AccountRepository =
+    fun provideAccountsRepository(ds: RoomAccountDataSource): AccountsRepository =
         RoomAccountRepository(ds)
+
+    // --- UseCases ---
+    @Provides
+    @Singleton
+    fun provideAccountUseCases(repo: AccountsRepository): AccountUseCases =
+        AccountUseCases.from(repo)
 }
