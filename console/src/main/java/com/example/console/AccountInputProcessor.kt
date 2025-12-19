@@ -13,8 +13,8 @@ class AccountInputProcessor(
     private val useCases: AccountUseCases
 ) {
     suspend fun processInput() {
-        println("Введите данные (пустая строка — завершить):")
-        println("T <номер> <плата> | S <номер> <процент> <true/false>")
+        println("Enter the data (empty string — end):")
+        println("T <Number> <Fee> | S <Number> <Percentage> <true/false>")
 
         while (true) {
             val line = input.readLine()?.trim().orEmpty()
@@ -25,13 +25,13 @@ class AccountInputProcessor(
 
             val account = factorySelector.create(parts)
             if (account == null) {
-                println("Ошибка: некорректные данные.")
+                println("Error: wrong data.")
                 continue
             }
 
             val r = useCases.add(account)
             if (r.isFailure) {
-                println("Ошибка: ${r.exceptionOrNull()?.message}")
+                println("Error: ${r.exceptionOrNull()?.message}")
             }
         }
     }

@@ -1,3 +1,45 @@
 <resources>
     <string name="app_name">App2</string>
+
+    <string name="title_accounts">Счета</string>
+    <string name="filter_label">Фильтр по номеру (префикс)</string>
+    <string name="clear">Очистить</string>
+    <string name="nothing_found">Ничего не найдено</string>
+
+    <string name="cancel">Отмена</string>
+    <string name="save">Сохранить</string>
+
+    <string name="type_current">Текущий</string>
+    <string name="type_savings">Сберегательный</string>
+
+    <string name="field_number">Номер</string>
+    <string name="field_fee">Плата за обслуживание (руб/мес)</string>
+    <string name="field_rate">Процентная ставка (%)</string>
+    <string name="field_capitalization">Капитализация</string>
+
+    <string name="open">Открыть</string>
+    <string name="edit">Изменить</string>
+    <string name="edit2">Редактировать</string>
+    <string name="editing">Редактирование</string>
+    <string name="delete">Удалить</string>
+    <string name="creating">Создание счета</string>
+
+    <!-- Ошибки формы -->
+    <string name="err_number_empty">Номер не может быть пустым</string>
+    <string name="err_fee_invalid">Некорректная плата за обслуживание</string>
+    <string name="err_rate_invalid">Некорректная процентная ставка</string>
+
+    <!-- Ошибки домена -->
+    <string name="err_duplicate_number">Счёт с номером %1$s уже существует</string>
+    <string name="err_not_found">Счёт %1$s не найден</string>
+
+    <string name="not_found">Открыть</string>
+    <string name="back">Назад</string>
+    <string name="watch">Просмотр</string>
+    <string name="fmt_current_account">Текущий счёт №%1$s, обслуживание: %2$.2f руб/мес</string>
+    <string name="fmt_savings_account">Сберегательный счёт №%1$s, процент: %2$.2f%%, %3$s</string>
+
+    <string name="cap_with">с капитализацией</string>
+    <string name="cap_without">без капитализации</string>
+
 </resources>

@@ -8,13 +8,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-
+import com.example.app2.ui.util.UiText
 import androidx.compose.ui.unit.dp
+import com.example.app2.R
 import com.example.core.model.BankAccount
 import com.example.core.model.CurrentAccount
 import com.example.core.model.SavingsAccount
-
+import com.example.app2.ui.util.asString
 private enum class AccountType { CURRENT, SAVINGS }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,7 +36,7 @@ fun AccountEditScreen(
         else -> AccountType.CURRENT.name
     }
 
-    // ✅ Всё, что должно переживать поворот — rememberSaveable
+
     var typeName by rememberSaveable(initKey) { mutableStateOf(initialTypeName) }
     val type = AccountType.valueOf(typeName)
 
@@ -52,14 +54,14 @@ fun AccountEditScreen(
         mutableStateOf((initial as? SavingsAccount)?.capitalization ?: false)
     }
 
-    var error by rememberSaveable(initKey) { mutableStateOf<String?>(null) }
+    var error by rememberSaveable(initKey) { mutableStateOf<UiText?>(null) }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(title) },
                 navigationIcon = {
-                    TextButton(onClick = onCancel) { Text("Отмена") }
+                    TextButton(onClick = onCancel) { Text(stringResource(R.string.cancel)) }
                 }
             )
         }
@@ -76,13 +78,13 @@ fun AccountEditScreen(
                     modifier = Modifier.testTag("chipCurrent"),
                     selected = type == AccountType.CURRENT,
                     onClick = { typeName = AccountType.CURRENT.name },
-                    label = { Text("Текущий") }
+                    label = { Text(stringResource(R.string.type_current)) }
                 )
                 FilterChip(
                     modifier = Modifier.testTag("chipSavings"),
                     selected = type == AccountType.SAVINGS,
                     onClick = { typeName = AccountType.SAVINGS.name },
-                    label = { Text("Сберегательный") }
+                    label = { Text(stringResource(R.string.type_savings)) }
                 )
             }
 
@@ -91,8 +93,8 @@ fun AccountEditScreen(
             OutlinedTextField(
 
                 value = number,
-                onValueChange = { number = it.filter(Char::isDigit) },
-                label = { Text("Номер") },
+                onValueChange = { number = it.filter(Char::isDigit).take(19) },
+                label = { Text(stringResource(R.string.field_number)) },
                 modifier = Modifier.fillMaxWidth().testTag("numberField"),
             )
 
@@ -102,8 +104,8 @@ fun AccountEditScreen(
                 AccountType.CURRENT -> {
                     OutlinedTextField(
                         value = serviceFee,
-                        onValueChange = { serviceFee = it.filter(Char::isDigit) },
-                        label = { Text("Плата за обслуживание (руб/мес)") },
+                        onValueChange = { serviceFee = it.filter(Char::isDigit).take(19) },
+                        label = { Text(stringResource(R.string.field_fee)) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                         modifier = Modifier.fillMaxWidth().testTag("serviceFeeField"),
                     )
@@ -112,8 +114,8 @@ fun AccountEditScreen(
                 AccountType.SAVINGS -> {
                     OutlinedTextField(
                         value = interestRate,
-                        onValueChange = { interestRate = it.filter(Char::isDigit) },
-                        label = { Text("Процентная ставка (%)") },
+                        onValueChange = { interestRate = it.filter(Char::isDigit).take(19) },
+                        label = { Text(stringResource(R.string.field_rate)) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                         modifier = Modifier.fillMaxWidth().testTag("interestRateField"),
                     )
@@ -127,14 +129,13 @@ fun AccountEditScreen(
                             onCheckedChange = { capitalization = it }
                         )
                         Spacer(Modifier.width(8.dp))
-                        Text("Капитализация")
+                        Text(stringResource(R.string.field_capitalization))
                     }
                 }
             }
 
             error?.let {
-                Spacer(Modifier.height(10.dp))
-                Text(it, color = MaterialTheme.colorScheme.error)
+                Text(it.asString(), color = MaterialTheme.colorScheme.error)
             }
 
             Spacer(Modifier.height(16.dp))
@@ -143,7 +144,7 @@ fun AccountEditScreen(
                 onClick = {
                     val n = number.trim()
                     if (n.isEmpty()) {
-                        error = "Номер не может быть пустым"
+                        error = UiText.Res(R.string.err_number_empty)
                         return@Button
                     }
 
@@ -151,7 +152,7 @@ fun AccountEditScreen(
                         AccountType.CURRENT -> {
                             val fee = serviceFee.replace(',', '.').toDoubleOrNull()
                                 ?: run {
-                                    error = "Некорректная плата за обслуживание"
+                                    error = UiText.Res(R.string.err_fee_invalid)
                                     return@Button
                                 }
                             CurrentAccount(n, fee)
@@ -160,7 +161,7 @@ fun AccountEditScreen(
                         AccountType.SAVINGS -> {
                             val rate = interestRate.replace(',', '.').toDoubleOrNull()
                                 ?: run {
-                                    error = "Некорректная процентная ставка"
+                                    error = UiText.Res(R.string.err_rate_invalid)
                                     return@Button
                                 }
                             SavingsAccount(n, rate, capitalization)
@@ -172,7 +173,7 @@ fun AccountEditScreen(
                 },
                 modifier = Modifier.fillMaxWidth().testTag("saveButton"),
             ) {
-                Text("Сохранить")
+                Text(stringResource(R.string.save))
             }
         }
     }

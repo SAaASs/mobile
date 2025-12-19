@@ -33,6 +33,6 @@ fun main() = runBlocking {
     // ✅ Потом получаем "текущий" список (StateFlow отдаст актуальное)
     val accounts = useCases.observe().first()
 
-    printer.print("\nВсе счета:")
+    printer.print("\nAll accounts:")
     accounts.forEach { printer.print(formatter.format(it)) }
 }

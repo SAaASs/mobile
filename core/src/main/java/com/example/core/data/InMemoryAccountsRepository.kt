@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-
+import com.example.core.domain.error.AccountFailure
 class InMemoryAccountsRepository : AccountsRepository {
 
     private val mutex = Mutex()
@@ -21,7 +21,7 @@ class InMemoryAccountsRepository : AccountsRepository {
 
     override suspend fun add(account: BankAccount): Result<Unit> = mutex.withLock {
         if (map.containsKey(account.number)) {
-            return Result.failure(IllegalArgumentException("Счёт с номером ${account.number} уже существует"))
+            return Result.failure(AccountFailure.DuplicateNumber(account.number))
         }
         map[account.number] = account
         emit()
@@ -30,10 +30,10 @@ class InMemoryAccountsRepository : AccountsRepository {
 
     override suspend fun update(oldNumber: String, newAccount: BankAccount): Result<Unit> = mutex.withLock {
         if (!map.containsKey(oldNumber)) {
-            return Result.failure(IllegalArgumentException("Счёт $oldNumber не найден"))
+            return Result.failure(AccountFailure.NotFound(oldNumber))
         }
         if (newAccount.number != oldNumber && map.containsKey(newAccount.number)) {
-            return Result.failure(IllegalArgumentException("Счёт с номером ${newAccount.number} уже существует"))
+            return Result.failure(AccountFailure.DuplicateNumber(newAccount.number))
         }
 
         map.remove(oldNumber)
