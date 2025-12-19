@@ -91,7 +91,7 @@ fun AccountEditScreen(
             OutlinedTextField(
 
                 value = number,
-                onValueChange = { number = it },
+                onValueChange = { number = it.filter(Char::isDigit) },
                 label = { Text("Номер") },
                 modifier = Modifier.fillMaxWidth().testTag("numberField"),
             )
@@ -102,7 +102,7 @@ fun AccountEditScreen(
                 AccountType.CURRENT -> {
                     OutlinedTextField(
                         value = serviceFee,
-                        onValueChange = { serviceFee = it },
+                        onValueChange = { serviceFee = it.filter(Char::isDigit) },
                         label = { Text("Плата за обслуживание (руб/мес)") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                         modifier = Modifier.fillMaxWidth().testTag("serviceFeeField"),
@@ -112,7 +112,7 @@ fun AccountEditScreen(
                 AccountType.SAVINGS -> {
                     OutlinedTextField(
                         value = interestRate,
-                        onValueChange = { interestRate = it },
+                        onValueChange = { interestRate = it.filter(Char::isDigit) },
                         label = { Text("Процентная ставка (%)") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                         modifier = Modifier.fillMaxWidth().testTag("interestRateField"),
